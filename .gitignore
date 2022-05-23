@@ -8,6 +8,7 @@
 outputs/*
 .vscode/*
 data/*
+models/*
 outputs/*
 outputs
 
