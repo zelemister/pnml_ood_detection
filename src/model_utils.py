@@ -39,11 +39,13 @@ def get_model(
             raise ValueError(f"trainset_name={trainset_name} is not supported")
     elif model_name.endswith("imagenet"):
         model = get_imagenet_pretrained_resnet(model_name)
+    elif model_name.endswith("vicreg"):
+        model = torch.load("../models/resnet50.pth")
     else:
         raise ValueError(f"model_name={model_name} is not supported")
 
     # Load pretrained weights
-    if is_pretrained is True and not model_name.endswith("imagnet"):
+    if is_pretrained is True and (not model_name.endswith("imagnet") or model_name.endswith("vicreg")):
         path = f"../models/{model_name}_{trainset_name}.pth"
         logger.info(f"Load pretrained model: {path}")
         model.load(path)
