@@ -108,4 +108,6 @@ def run_experiment(cfg: DictConfig):
 
 
 if __name__ == "__main__":
+    def exclude_bias_and_norm(p):
+        return p.ndim == 1
     run_experiment()
