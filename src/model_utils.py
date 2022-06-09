@@ -10,7 +10,7 @@ import torchvision.models as models
 from model_arch_utils.densenet import DenseNet3
 from model_arch_utils.densenet_gram import DenseNet3Gram
 from model_arch_utils.resnet import ResNet34
-from model_arch_utils.vicreg import VicReg
+from model_arch_utils.resnet_vicreg import resnet50
 from model_arch_utils.resnet_gram import ResNet34Gram
 from model_arch_utils.wrn import WideResNet
 import types
@@ -41,18 +41,28 @@ def get_model(
     elif model_name.endswith("imagenet"):
         model = get_imagenet_pretrained_resnet(model_name)
     elif model_name.endswith("vicreg"):
-        model = VicReg(num_classes= 10)
+        model = resnet50()[0]
+        if trainset_name in ["cifar10", "svhn"]:
+            num_c=10
+        elif trainset_name == "cifar100":
+            num_c=100
+        #head = nn.Linear(embedding, num_c)
+        #model = nn.Sequential(backbone, head)
+
     else:
         raise ValueError(f"model_name={model_name} is not supported")
 
     # Load pretrained weights
-    if (is_pretrained is True and not model_name.endswith("imagnet")) and not model_name.endswith("vicreg"):
+    if is_pretrained is True and not model_name.endswith("imagnet") and not model_name.endswith("vicreg"):
         path = f"../models/{model_name}_{trainset_name}.pth"
         logger.info(f"Load pretrained model: {path}")
-    if model_name.endswith("vicreg"):
-        path = "../models/resnet50.pth"
-        logger.info(f"Load pretrained model: {path}")
-    model.load(path)
+        model.load(path)
+    if is_pretrained is True and model_name.endswith("vicreg"):
+        m = torch.load(f"../models/{model_name}_{trainset_name}.pth")
+        m = {k[2:]: v for k, v in m.items()}
+        m = {"linear.weight" if k == "weight" else k: v for k, v in m.items()}
+        m = {"linear.bias" if k == "bias" else k: v for k, v in m.items()}
+        model.load_state_dict(m)
     return model
 
 

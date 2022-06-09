@@ -216,7 +216,7 @@ class ResNet(nn.Module):
             last_activation=last_activation,
         )
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-
+        self.linear = nn.Linear(2048, 10)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
@@ -293,9 +293,22 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
+        x = self.linear(x)
+        # Added this method for pNML ood detection
+        self.features_out = x.clone()
 
         return x
 
+    def load(self, path="../models/vicreg_cifar10.pth"):
+        tm = torch.load(path, map_location="cpu")
+        self.load_state_dict(tm)
+
+    def get_features(self):
+        """
+        Added this method for pNML ood detection
+        :return:
+        """
+        return self.features_out
 
 def resnet34(**kwargs):
     return ResNet(BasicBlock, [3, 4, 6, 3], **kwargs), 512
