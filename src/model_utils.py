@@ -42,12 +42,6 @@ def get_model(
         model = get_imagenet_pretrained_resnet(model_name)
     elif model_name.endswith("vicreg"):
         model = resnet50()[0]
-        if trainset_name in ["cifar10", "svhn"]:
-            num_c=10
-        elif trainset_name == "cifar100":
-            num_c=100
-        #head = nn.Linear(embedding, num_c)
-        #model = nn.Sequential(backbone, head)
 
     else:
         raise ValueError(f"model_name={model_name} is not supported")
