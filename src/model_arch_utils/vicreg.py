@@ -298,50 +298,8 @@ class ResNet(nn.Module):
 
         return x
 
-    def load(self, path="../models/resnet50.pth"):
-        tm = torch.load(path, map_location="cpu")
-        self.load_state_dict(tm)
-
-    def get_features(self):
-        """
-        Added this method for pNML ood detection
-        :return:
-        """
-        return self.features_out
 
 
-class VicReg(nn.Module):
-    def __init__(self, num_classes):
-        super(VicReg, self).__init__()
-        self.model = resnet50()
-        m = torch.load("../models/resnet50.pth")
-        self.model.load_state_dict(m)
-        block = Bottleneck
-        self.linear = nn.Linear(512 * block.expansion, num_classes)
-
-    def forward(self, x):
-        x = self.model.padding(x)
-
-        x = self.model.conv1(x)
-        x = self.model.bn1(x)
-        x = self.model.relu(x)
-        x = self.model.maxpool(x)
-        x = self.model.layer1(x)
-        x = self.model.layer2(x)
-        x = self.model.layer3(x)
-        x = self.model.layer4(x)
-
-        # do I have to delete this avgpool layer?
-        x = self.model.avgpool(x)
-
-        # added layer
-        x = self.model.linear(x)
-
-        x = torch.flatten(x, 1)
-
-        self.features_out = x.clone()
-
-        return x
 
 
 def resnet34(**kwargs):
@@ -349,7 +307,7 @@ def resnet34(**kwargs):
 
 
 def resnet50(**kwargs):
-    return ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
+    return ResNet(Bottleneck, [3, 4, 6, 3], **kwargs), 2048
 
 
 def resnet101(**kwargs):

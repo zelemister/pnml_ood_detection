@@ -20,7 +20,7 @@ from torch import nn, optim
 from torchvision import datasets, transforms
 import torch
 
-import model_arch_utils.resnet_vicreg as resnet
+import model_arch_utils.vicreg as resnet
 
 
 def get_arguments():
