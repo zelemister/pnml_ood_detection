@@ -200,23 +200,6 @@ def main_worker(gpu, args):
         transform=data_transform,
     )
 
-
-    trainloader = data.DataLoader(
-        trainset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-        pin_memory=True,
-    )
-
-    testloader = data.DataLoader(
-        testset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-        pin_memory=True,
-    )
-
     val_dataset = datasets.CIFAR10(
         root=traindir,
         train=False,
