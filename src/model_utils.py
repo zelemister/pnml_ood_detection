@@ -61,6 +61,7 @@ def get_model(
     return model
 
 
+
 def get_gram_model(
     model_name: str, trainset_name: str, is_pretrained: bool = True
 ) -> torch.nn.Module:
