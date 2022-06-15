@@ -54,9 +54,10 @@ def get_model(
     if is_pretrained is True and model_name.endswith("vicreg"):
         m = torch.load(f"../models/{model_name}_{trainset_name}.pth")
         m = {k[2:]: v for k, v in m.items()}
+        m = {k[7:] if k[0:7] == "dule.0." else k: v for k, v in m.items()}
+        m = {k[7:] if k[0:7] == "dule.1." else k: v for k, v in m.items()}
         m = {"linear.weight" if k == "weight" else k: v for k, v in m.items()}
         m = {"linear.bias" if k == "bias" else k: v for k, v in m.items()}
-        m = {k[7:] if k[0:7] == "dule.0." else k: v for k, v in m.items()}
         model.load_state_dict(m)
     return model
 
