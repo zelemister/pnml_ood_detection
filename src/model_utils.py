@@ -41,7 +41,12 @@ def get_model(
     elif model_name.endswith("imagenet"):
         model = get_imagenet_pretrained_resnet(model_name)
     elif model_name.endswith("vicreg"):
-        model = resnet50()[0]
+        if trainset_name in ["cifar10", "svhn"]:
+            model = resnet50(num_c=10)[0]
+        elif trainset_name == "cifar100":
+            model = resnet50(num_c=100)[0]
+        else:
+            raise ValueError(f"trainset_name={trainset_name} is not supported")
 
     else:
         raise ValueError(f"model_name={model_name} is not supported")
