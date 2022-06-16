@@ -153,7 +153,7 @@ class ResNet(nn.Module):
         replace_stride_with_dilation=None,
         norm_layer=None,
         last_activation="relu",
-        num_c = 10
+        num_c=10
     ):
         super(ResNet, self).__init__()
         if norm_layer is None:
@@ -316,8 +316,8 @@ def resnet34(**kwargs):
     return ResNet(BasicBlock, [3, 4, 6, 3], **kwargs), 512
 
 
-def resnet50(num_c = 10, **kwargs):
-    return ResNet(Bottleneck, [3, 4, 6, 3], num_c, **kwargs), 2048
+def resnet50(num_c=10, **kwargs):
+    return ResNet(Bottleneck, [3, 4, 6, 3], num_c=num_c, **kwargs), 2048
 
 
 def resnet101(**kwargs):
