@@ -334,7 +334,7 @@ def get_cifar10_loaders(
     trainset = datasets.CIFAR10(
         root=data_dir,
         train=True,
-        download=True,
+        download=False,
         transform=data_transform,
     )
     trainloader = data.DataLoader(
@@ -346,7 +346,7 @@ def get_cifar10_loaders(
     )
 
     testset = datasets.CIFAR10(
-        root=data_dir, train=False, download=True, transform=data_transform
+        root=data_dir, train=False, download=False, transform=data_transform
     )
     testloader = data.DataLoader(
         testset,

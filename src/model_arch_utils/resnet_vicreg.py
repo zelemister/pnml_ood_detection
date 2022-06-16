@@ -293,11 +293,12 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
-        x = self.linear(x)
-        # Added this method for pNML ood detection
-        self.features_out = x.clone()
+        self.features_out = x
 
-        return x
+        out = self.linear(x)
+        # Added this method for pNML ood detection
+
+        return out
 
     def load(self, path="../models/vicreg_cifar10.pth"):
         tm = torch.load(path, map_location="cpu")
