@@ -99,6 +99,11 @@ def get_arguments():
         help="number of data loader workers",
     )
 
+    parser.add_argument(
+        "--dataset",
+        default="cifar10",
+        type=str,
+    )
     return parser
 
 
@@ -147,8 +152,8 @@ def main_worker(gpu, args):
             for (key, value) in state_dict.items()
         }
     backbone.load_state_dict(state_dict, strict=False)
-
-    head = nn.Linear(embedding, 10)
+    numc = 10 if args.dataset == "cifar10" else 100
+    head = nn.Linear(embedding, numc)
     head.weight.data.normal_(mean=0.0, std=0.01)
     head.bias.data.zero_()
     model = nn.Sequential(backbone, head)
@@ -192,20 +197,34 @@ def main_worker(gpu, args):
             normalize,
         ]
     )
+    if args.dataset == "cifar10":
+        train_dataset = datasets.CIFAR10(
+            root=traindir,
+            train=True,
+            download=True,
+            transform=data_transform,
+        )
 
-    train_dataset = datasets.CIFAR10(
-        root=traindir,
-        train=True,
-        download=True,
-        transform=data_transform,
-    )
+        val_dataset = datasets.CIFAR10(
+            root=traindir,
+            train=False,
+            download=True,
+            transform=data_transform,
+        )
+    elif args.dataset == "cifar100":
+        train_dataset = datasets.CIFAR100(
+            root=traindir,
+            train=True,
+            download=True,
+            transform=data_transform,
+        )
 
-    val_dataset = datasets.CIFAR10(
-        root=traindir,
-        train=False,
-        download=True,
-        transform=data_transform,
-    )
+        val_dataset = datasets.CIFAR100(
+            root=traindir,
+            train=False,
+            download=True,
+            transform=data_transform,
+        )
 
     if args.train_percent in {1, 10}:
         train_dataset.samples = []
