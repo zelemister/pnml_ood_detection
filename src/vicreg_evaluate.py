@@ -228,7 +228,7 @@ def main_worker(gpu, args):
         )
 
     if args.train_percent in {1, 10}:
-        train_dataset = Subset(train_dataset, random.sample(list(range(0, train_dataset.__len__())), train_dataset.__len__() *(args.train_percent/100)))
+        train_dataset = Subset(train_dataset, random.sample(list(range(0, train_dataset.__len__())), int(train_dataset.__len__() *(args.train_percent/100))))
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     kwargs = dict(
