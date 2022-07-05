@@ -19,6 +19,7 @@ import urllib
 from torch import nn, optim
 from torchvision import datasets, transforms
 import torch
+from torch.utils.data import Subset
 
 import model_arch_utils.vicreg as resnet
 
@@ -227,13 +228,7 @@ def main_worker(gpu, args):
         )
 
     if args.train_percent in {1, 10}:
-        train_dataset.samples = []
-        for fname in args.train_files:
-            fname = fname.decode().strip()
-            cls = fname.split("_")[0]
-            train_dataset.samples.append(
-                (traindir / cls / fname, train_dataset.class_to_idx[cls])
-            )
+        train_dataset = Subset(train_dataset, random.sample(list(range(0, train_dataset.__len__())), train_dataset.__len__() *(args.train_percent/100)))
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     kwargs = dict(
@@ -316,6 +311,9 @@ def main_worker(gpu, args):
                 scheduler=scheduler.state_dict(),
             )
             torch.save(state, args.exp_dir / "checkpoint.pth")
+    repath = args.exp_dir / "checkpoint.pth"
+    m = torch.load(repath)["model"]
+    torch.save(m, "../models/vicreg_" +args.dataset + ".pth")
 
 
 def handle_sigusr1(signum, frame):
