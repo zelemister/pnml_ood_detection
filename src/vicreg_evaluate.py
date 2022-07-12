@@ -198,6 +198,7 @@ def main_worker(gpu, args):
             normalize,
         ]
     )
+
     if args.dataset == "cifar10":
         train_dataset = datasets.CIFAR10(
             root=traindir,

@@ -155,10 +155,16 @@ def create_performance_df(
 
 
 def create_tables():
-    methods = ["baseline", "odin", "gram", "oecc"]
-    model_names = ["densenet", "resnet"]
-    ind_names = ["cifar10", "cifar100", "svhn"]
+    #methods = ["baseline", "odin", "gram", "oecc"]
+    #model_names = ["densenet", "resnet"]
+    #ind_names = ["cifar10", "cifar100", "svhn"]
+    #metrics = ["AUROC", "TNR at TPR 95%", "Detection Acc."]
+
+    methods = ["baseline"]
+    model_names = ["vicreg"]
+    ind_names = ["cifar10", "cifar100"]
     metrics = ["AUROC", "TNR at TPR 95%", "Detection Acc."]
+
 
     performance_path = "../outputs/"
     output_path = "../outputs/tables"
@@ -178,7 +184,7 @@ def create_tables():
             )
             df.to_latex(out_path, index=True, na_rep="", multirow=True, escape=False)
             manipulate_output_file(out_path)
-
+    """
     methods = ["energy"]
     model_name = "wrn"
     ind_names = ["cifar10", "cifar100"]
@@ -201,7 +207,7 @@ def create_tables():
     src = "\midrule"
     target = " \midrule & & \multicolumn{3}{c}{Energy/+pNML} \\\\ \cmidrule{3-5} "
     replace_string_in_file(out_path, src, target)
-
+    """
 
 if __name__ == "__main__":
     create_tables()
