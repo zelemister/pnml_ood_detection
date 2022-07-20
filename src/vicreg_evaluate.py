@@ -228,8 +228,17 @@ def main_worker(gpu, args):
             transform=data_transform,
         )
 
+    elif args.dataset == "svhn":
+        train_dataset = datasets.SVHN(
+            root=traindir, split="train", download=True, transform=data_transform
+        )
+        val_dataset = datasets.SVHN(
+            root=traindir, split="test", download=True, transform=data_transform
+        )
+
     if args.train_percent in {1, 10}:
-        train_dataset = Subset(train_dataset, random.sample(list(range(0, train_dataset.__len__())), int(train_dataset.__len__() *(args.train_percent/100))))
+        train_dataset = Subset(train_dataset, random.sample(list(range(0, train_dataset.__len__())),
+                                                            int(train_dataset.__len__() * (args.train_percent / 100))))
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     kwargs = dict(
@@ -253,7 +262,7 @@ def main_worker(gpu, args):
             assert False
         train_sampler.set_epoch(epoch)
         for step, (images, target) in enumerate(
-            train_loader, start=epoch * len(train_loader)
+                train_loader, start=epoch * len(train_loader)
         ):
             output = model(images.cuda(gpu, non_blocking=True))
             loss = criterion(output, target.cuda(gpu, non_blocking=True))
@@ -314,7 +323,7 @@ def main_worker(gpu, args):
             torch.save(state, args.exp_dir / "checkpoint.pth")
     repath = args.exp_dir / "checkpoint.pth"
     m = torch.load(repath)["model"]
-    torch.save(m, "../models/vicreg_" +args.dataset + ".pth")
+    torch.save(m, "../models/vicreg_" + args.dataset + ".pth")
 
 
 def handle_sigusr1(signum, frame):
