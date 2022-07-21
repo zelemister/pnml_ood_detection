@@ -230,10 +230,10 @@ def main_worker(gpu, args):
 
     elif args.dataset == "svhn":
         train_dataset = datasets.SVHN(
-            root=traindir, split="train", download=True, transform=data_transform
+            root=traindir / "svhn", split="train", download=False, transform=data_transform
         )
         val_dataset = datasets.SVHN(
-            root=traindir, split="test", download=True, transform=data_transform
+            root=traindir / "svhn", split="test", download=False, transform=data_transform
         )
 
     if args.train_percent in {1, 10}:
